@@ -52,9 +52,9 @@ export const handler = async (event: any) => {
 
   try {
     const result = await postRequest(
-      process.env.User,
-      process.env.Hostname,
-      process.env.myEnvVariable,
+      process.env.user,
+      process.env.hostname,
+      process.env.key,
       {
         Filter: {
           Username: username,

@@ -4,4 +4,9 @@ import * as cdk from "aws-cdk-lib";
 import { CdkStepFunctionApiGatewayStack } from "../lib/cdk-step-function-api-gateway-stack";
 
 const app = new cdk.App();
-new CdkStepFunctionApiGatewayStack(app, "CdkStepFunctionApiGatewayStack");
+new CdkStepFunctionApiGatewayStack(app, "CdkStepFunctionApiGatewayStack", {
+  env: {
+    region: "",
+    account: "",
+  },
+});

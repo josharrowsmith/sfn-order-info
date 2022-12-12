@@ -67,9 +67,9 @@ export const handler = async (event: APIGatewayEvent) => {
 
   try {
     const result: any = await postRequest(
-      process.env.User,
-      process.env.Hostname,
-      process.env.myEnvVariable,
+      process.env.user,
+      process.env.hostname,
+      process.env.key,
       {
         Filter: {
           Email: [email],

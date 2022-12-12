@@ -13,10 +13,10 @@ import {
   NodejsFunctionProps,
 } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
-import { Duration } from "aws-cdk-lib";
+import { Duration, Fn } from "aws-cdk-lib";
 import { LambdaInvoke } from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { LogGroup } from "aws-cdk-lib/aws-logs";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import { StringListParameter } from "aws-cdk-lib/aws-ssm";
 import * as path from "path";
 
 /**
@@ -31,31 +31,21 @@ export class CustomerStateMachine extends Construct {
     const baseLambdaPath = path.resolve(__dirname, "..", "lambda");
 
     // env variables (todo put in object)
-    const ApiKey = new StringParameter(this, `value`, {
-      parameterName: "/cdk/test",
-      stringValue: "", // This should be updated manually on AWS Console
-    }).stringValue;
+    const envList = new StringListParameter(this, "ip-list", {
+      stringListValue: ["val1", "val2", "val3"],
+      parameterName: "ipList",
+    });
 
-    const hostname = new StringParameter(this, `value`, {
-      parameterName: "/cdk/hostname",
-      stringValue: "", // This should be updated manually on AWS Console
-    }).stringValue;
-
-    const user = new StringParameter(this, `value`, {
-      parameterName: "/cdk/user",
-      stringValue: "", // This should be updated manually on AWS Console
-    }).stringValue;
-
-    const commonFunctionProps: NodejsFunctionProps = {
+    const commonFunctionProps: any = {
       runtime: Runtime.NODEJS_16_X,
       handler: "handler",
       bundling: { minify: true },
       memorySize: 128,
       timeout: Duration.seconds(10),
       environment: {
-        myEnvVariable: ApiKey,
-        hostname: hostname,
-        user: user,
+        key: Fn.select(0, envList.stringListValue),
+        hostname: Fn.select(1, envList.stringListValue),
+        user: Fn.select(2, envList.stringListValue),
       },
     };
 
